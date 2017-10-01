@@ -1,6 +1,11 @@
 FROM golang
-EXPOSE 8080
 ADD . /go/src
 WORKDIR /go/src
-RUN go build main.go
-CMD ['./main']
+
+RUN go get github.com/go-sql-driver/mysql
+RUN go get github.com/gorilla/mux
+RUN go build -o bin/main main.go app.go model.go
+
+ENTRYPOINT /go/src/bin/main
+
+EXPOSE 8080

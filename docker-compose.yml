@@ -1,7 +1,33 @@
-version: "3"
+version: '3'
 
 services:
-  web:
+  db:
+    image: mysql:5.7
+    volumes:
+      - db_data:/var/lib/mysql
+    restart: always
+    ports:
+      - "3306:3306"
+    expose:
+      - "3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: testrootpassword
+      MYSQL_DATABASE: testing
+      MYSQL_USER: testuser
+      MYSQL_PASSWORD: testpassword
+
+  api:
+    depends_on:
+      - db
     build: .
     ports:
-     - "5000:5000"
+      - "8080:8080"
+    # restart: always
+    environment:
+      APP_DB_HOST: db:3306
+      APP_DB_NAME: testing
+      APP_DB_USERNAME: testuser
+      APP_DB_PASSWORD: testpassword
+volumes:
+  db_data:
+
